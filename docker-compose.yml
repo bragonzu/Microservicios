@@ -1,0 +1,175 @@
+# version: "3.9"
+
+# services:
+#   autenticacion:
+#     build: ./autenticacion
+#     ports:
+#       - "5000:5000"  # Puerto externo : Puerto interno
+#     environment:
+#       POSTGRES_HOST: postgres
+#       POSTGRES_USER: auth_user
+#       POSTGRES_PASSWORD: auth_password
+#       POSTGRES_DB: auth_database
+#     # networks:
+#     #   - my_network
+
+#   citas:
+#     build: ./citas
+#     ports:
+#       - "5001:5001"  # Puerto externo : Puerto interno
+#     environment:
+#       POSTGRES_HOST: postgres
+#       POSTGRES_USER: citas_user
+#       POSTGRES_PASSWORD: citas_password
+#       POSTGRES_DB: citas_database
+#     # networks:
+#     #   - my_network
+
+#   postgres:
+#     image: postgres
+#     environment:
+#       POSTGRES_USER: admin_user
+#       POSTGRES_PASSWORD: admin_password
+#       POSTGRES_DB: admin_database
+#     # networks:
+#     #   - my_network
+
+# networks:
+#   my_network:
+#     driver: bridge
+
+
+# version: "3.9"
+
+# services:
+#   autenticacion:
+#     build: ./autenticacion
+#     ports:
+#       - "5000:5000"  # Puerto externo : Puerto interno
+#     environment:
+#       POSTGRES_HOST: postgres
+#       POSTGRES_USER: auth_user
+#       POSTGRES_PASSWORD: auth_password
+#       POSTGRES_DB: auth_database
+
+#   citas:
+#     build: ./citas
+#     ports:
+#       - "5001:5001"  # Puerto externo : Puerto interno (diferente)
+#     environment:
+#       POSTGRES_HOST: postgres
+#       POSTGRES_USER: citas_user
+#       POSTGRES_PASSWORD: citas_password
+#       POSTGRES_DB: citas_database
+
+#   postgres:
+#     image: postgres
+#     environment:
+#       POSTGRES_USER: admin_user
+#       POSTGRES_PASSWORD: admin_password
+#       POSTGRES_DB: admin_database
+# version: "3.9"
+
+# services:
+#   autenticacion:
+#     build: ./autenticacion
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       POSTGRES_HOST: postgres
+#       POSTGRES_USER: auth_user
+#       POSTGRES_PASSWORD: auth_password
+#       POSTGRES_DB: auth_database
+#     networks:
+#       - my_network
+
+#   citas:
+#     build: ./citas
+#     ports:
+#       - "5001:5001"
+#     environment:
+#       POSTGRES_HOST: postgres
+#       POSTGRES_USER: citas_user
+#       POSTGRES_PASSWORD: citas_password
+#       POSTGRES_DB: citas_database
+#     networks:
+#       - my_network
+
+#   postgres:
+#     image: postgres
+#     environment:
+#       POSTGRES_USER: admin_user
+#       POSTGRES_PASSWORD: admin_password
+#       POSTGRES_DB: admin_database
+#     networks:
+#       - my_network
+
+# networks:
+#   my_network:
+#     driver: bridge
+
+# version: "3.9"
+
+# services:
+#   autenticacion:
+#     build: ./autenticacion
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       FLASK_ENV: development
+
+# networks:
+#   my_network:
+#     driver: bridge
+  version: '3.9'
+
+  services:
+    auth_service:
+      build: ./autenticacion
+      container_name: auth_service
+      ports:
+        - "5000:5000"
+      environment:
+        FLASK_ENV: development
+      networks:
+        - my_network
+      depends_on:
+        - postgres_auth
+
+    citas_service:
+      build: ./citas
+      container_name: citas_service
+      ports:
+        - "5002:5002"
+      networks:
+        - my_network    
+      depends_on:
+        - postgres_citas
+
+    postgres_auth:
+      image: postgres:latest
+      container_name: postgres_auth
+      environment:
+        POSTGRES_USER: auth_user
+        POSTGRES_PASSWORD: auth_password
+        POSTGRES_DB: auth_database
+      ports:
+        - "5432:5432"
+      networks:
+        - my_network
+
+    postgres_citas:
+      image: postgres:latest
+      container_name: postgres_citas
+      environment:
+        POSTGRES_USER: citas_user
+        POSTGRES_PASSWORD: citas_password
+        POSTGRES_DB: citas_database
+      ports:
+        - "5433:5432"
+      networks:
+        - my_network
+
+  networks:
+    my_network:
+      driver: bridge
