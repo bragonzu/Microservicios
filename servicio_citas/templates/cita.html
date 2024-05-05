@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Cita - Mi Proyecto{% endblock %}
+
+{% block content %}
+    <h1>Cita</h1>
+    <p>Detalles de la cita:</p>
+    <ul>
+        <li>Fecha: {{ cita.fecha }}</li>
+        <li>Hora: {{ cita.hora }}</li>
+        <li>Paciente: {{ cita.paciente }}</li>
+        <!-- Otros detalles de la cita -->
+    </ul>
+{% endblock %}

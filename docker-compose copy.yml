@@ -1,0 +1,56 @@
+  version: '3.9'
+
+  services:
+    auth_service:
+      build: ./autenticacion
+      container_name: auth_service
+      ports:
+        - "5000:5000"
+      environment:
+        FLASK_ENV: development
+      networks:
+        - my_network
+      depends_on:
+        - postgres_auth
+
+    citas_service:
+      build: ./citas
+      container_name: citas_service
+      ports:
+        - "5002:5002"
+      environment:
+        FLASK_ENV: development
+      networks:
+        - my_network    
+      depends_on:
+        - postgres_citas
+
+    postgres_auth:
+      image: postgres:latest
+      container_name: postgres_auth
+      environment:
+        POSTGRES_USER: auth_user
+        POSTGRES_PASSWORD: auth_password
+        POSTGRES_DB: auth_database
+        POSTGRES_HOST: 0.0.0.0
+      ports:
+        - "5432:5432"
+      networks:
+        - my_network
+
+    postgres_citas:
+      image: postgres:latest
+      container_name: postgres_citas
+      environment:
+        POSTGRES_USER: auth_user
+        POSTGRES_PASSWORD: auth_password
+        POSTGRES_DB: auth_database
+        POSTGRES_HOST: 0.0.2.2
+      ports:
+        - "5433:5432"
+      networks:
+        - my_network
+
+  networks:
+    my_network:
+      driver: bridge

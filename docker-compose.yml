@@ -1,175 +1,127 @@
-# version: "3.9"
+version: '3.9'
 
-# services:
-#   autenticacion:
-#     build: ./autenticacion
-#     ports:
-#       - "5000:5000"  # Puerto externo : Puerto interno
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: auth_user
-#       POSTGRES_PASSWORD: auth_password
-#       POSTGRES_DB: auth_database
-#     # networks:
-#     #   - my_network
+services:
+  api_gateway:
+    build:
+      context: ./api_gateway
+    container_name: api_gateway
+    ports:
+      - "8080:80"
+    networks:
+      - clinic_network
+    depends_on:
+      - postgres_api_gateway
 
-#   citas:
-#     build: ./citas
-#     ports:
-#       - "5001:5001"  # Puerto externo : Puerto interno
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: citas_user
-#       POSTGRES_PASSWORD: citas_password
-#       POSTGRES_DB: citas_database
-#     # networks:
-#     #   - my_network
+  servicio_citas:
+    build:
+      context: ./servicio_citas
+    container_name: servicio_citas
+    ports:
+      - "8081:5000"
+    depends_on:
+      - postgres_citas
+    networks:
+      - clinic_network
 
-#   postgres:
-#     image: postgres
-#     environment:
-#       POSTGRES_USER: admin_user
-#       POSTGRES_PASSWORD: admin_password
-#       POSTGRES_DB: admin_database
-#     # networks:
-#     #   - my_network
+  servicio_pacientes:
+    build:
+      context: ./servicio_pacientes
+    container_name: servicio_pacientes
+    ports:
+      - "8082:5000"
+    depends_on:
+      - postgres_pacientes
+    networks:
+      - clinic_network
 
-# networks:
-#   my_network:
-#     driver: bridge
+  servicio_doctores:
+    build:
+      context: ./servicio_doctores
+    container_name: servicio_doctores
+    ports:
+      - "8083:5000"
+    depends_on:
+      - postgres_doctores
+    networks:
+      - clinic_network
 
+  servicio_calendario:
+    build:
+      context: ./servicio_calendario
+    container_name: servicio_calendario
+    ports:
+      - "8084:5000"
+    depends_on:
+      - postgres_calendario
+    networks:
+      - clinic_network
 
-# version: "3.9"
+  postgres_api_gateway:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: api_gateway_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_api_gateway_data:/var/lib/postgresql/data
 
-# services:
-#   autenticacion:
-#     build: ./autenticacion
-#     ports:
-#       - "5000:5000"  # Puerto externo : Puerto interno
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: auth_user
-#       POSTGRES_PASSWORD: auth_password
-#       POSTGRES_DB: auth_database
+  postgres_citas:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: citas_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_citas_data:/var/lib/postgresql/data
 
-#   citas:
-#     build: ./citas
-#     ports:
-#       - "5001:5001"  # Puerto externo : Puerto interno (diferente)
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: citas_user
-#       POSTGRES_PASSWORD: citas_password
-#       POSTGRES_DB: citas_database
+  postgres_pacientes:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: pacientes_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_pacientes_data:/var/lib/postgresql/data
 
-#   postgres:
-#     image: postgres
-#     environment:
-#       POSTGRES_USER: admin_user
-#       POSTGRES_PASSWORD: admin_password
-#       POSTGRES_DB: admin_database
-# version: "3.9"
+  postgres_doctores:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: doctores_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - postgres_doctores_data:/var/lib/postgresql/data
 
-# services:
-#   autenticacion:
-#     build: ./autenticacion
-#     ports:
-#       - "5000:5000"
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: auth_user
-#       POSTGRES_PASSWORD: auth_password
-#       POSTGRES_DB: auth_database
-#     networks:
-#       - my_network
+  postgres_calendario:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: calendario_db
+    ports:
+      - "5438:5432"
+    volumes:
+      - postgres_calendario_data:/var/lib/postgresql/data
 
-#   citas:
-#     build: ./citas
-#     ports:
-#       - "5001:5001"
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: citas_user
-#       POSTGRES_PASSWORD: citas_password
-#       POSTGRES_DB: citas_database
-#     networks:
-#       - my_network
+networks:
+  clinic_network:
 
-#   postgres:
-#     image: postgres
-#     environment:
-#       POSTGRES_USER: admin_user
-#       POSTGRES_PASSWORD: admin_password
-#       POSTGRES_DB: admin_database
-#     networks:
-#       - my_network
-
-# networks:
-#   my_network:
-#     driver: bridge
-
-# version: "3.9"
-
-# services:
-#   autenticacion:
-#     build: ./autenticacion
-#     ports:
-#       - "5000:5000"
-#     environment:
-#       FLASK_ENV: development
-
-# networks:
-#   my_network:
-#     driver: bridge
-  version: '3.9'
-
-  services:
-    auth_service:
-      build: ./autenticacion
-      container_name: auth_service
-      ports:
-        - "5000:5000"
-      environment:
-        FLASK_ENV: development
-      networks:
-        - my_network
-      depends_on:
-        - postgres_auth
-
-    citas_service:
-      build: ./citas
-      container_name: citas_service
-      ports:
-        - "5002:5002"
-      networks:
-        - my_network    
-      depends_on:
-        - postgres_citas
-
-    postgres_auth:
-      image: postgres:latest
-      container_name: postgres_auth
-      environment:
-        POSTGRES_USER: auth_user
-        POSTGRES_PASSWORD: auth_password
-        POSTGRES_DB: auth_database
-      ports:
-        - "5432:5432"
-      networks:
-        - my_network
-
-    postgres_citas:
-      image: postgres:latest
-      container_name: postgres_citas
-      environment:
-        POSTGRES_USER: citas_user
-        POSTGRES_PASSWORD: citas_password
-        POSTGRES_DB: citas_database
-      ports:
-        - "5433:5432"
-      networks:
-        - my_network
-
-  networks:
-    my_network:
-      driver: bridge
+volumes:
+  postgres_api_gateway_data:
+  postgres_citas_data:
+  postgres_pacientes_data:
+  postgres_doctores_data:
+  postgres_calendario_data:

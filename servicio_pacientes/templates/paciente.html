@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Paciente - Mi Proyecto{% endblock %}
+
+{% block content %}
+    <h1>Paciente</h1>
+    <p>Detalles del paciente:</p>
+    <ul>
+        <li>Nombre: {{ paciente.nombre }}</li>
+        <li>Edad: {{ paciente.edad }}</li>
+        <li>Correo electrónico: {{ paciente.email }}</li>
+        <!-- Otros detalles del paciente -->
+    </ul>
+{% endblock %}
